@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="cs-cz">
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap-5.0.2-dist/css/bootstrap.min.css')}}">
+        {% if title %}
+            <title>PojištěníApp - {{ title }}</title>
+        {% else %}
+            <title>PojištěníApp</title>
+        {% endif %}
+    </head>
+    <body>
+        <header>
+            {% block header %}
+            <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+                <div class="container-fluid mx-5">
+                    <a class="navbar-brand" href="{{ url_for('main.home') }}">PojištěníApp</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <div class="navbar-nav">
+                            {% if current_user.is_authenticated %}
+                                <a class="nav-link {% if title == 'Domů' %}active{% endif %}" href="{{ url_for('main.home') }}">Domů</a>
+                                {% if current_user.email == 'admin@blog.com' %}
+                                    <a class="nav-link {% if title == 'Uživatelé' %}active{% endif %}" href="{{ url_for('users.users_management') }}">Uživatelé</a>
+                                    <a class="nav-link {% if title == 'Pojištěnci' %}active{% endif %}" href="{{ url_for('users.insured_persons') }}">Pojištěnci</a>
+                                {% else %}
+                                    <a class="nav-link {% if title == 'Účet' %}active{% endif %}" href="{{ url_for('users.my_account') }}">Účet</a>
+                                {% endif %}
+                            {% else %}
+                                <a class="nav-link {% if title == 'Domů' %}active{% endif %}" href="{{ url_for('main.home') }}">Domů</a>
+                            {% endif %}
+                        </div>
+                        <div class="navbar-nav ms-auto">
+                            {% if current_user.is_authenticated %}
+                                <div class="text-white d-flex align-items-center pe-2">
+                                    {% if current_user.email == 'admin@blog.com' %}
+                                        {{ current_user.first_name }}
+                                    {% else %}
+                                        {{ current_user.first_name }} {{ current_user.last_name }}
+                                    {% endif %}
+                                </div>
+                                <a class="nav-link {% if title == 'Odhlášení' %}active{% endif %}" href="{{ url_for('users.logout') }}">Odhlásit se</a>
+                            {% else %}
+                                <a class="nav-link {% if title == 'Přihlášení' %}active{% endif %}" href="{{ url_for('users.login') }}">Přihlášení</a>
+                                <a class="nav-link {% if title == 'Registrace' %}active{% endif %}" href="{{ url_for('users.register') }}">Registrace</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </nav>
+            {% endblock %}
+        </header>
+
+        <main role="main" class="container mt-5">
+            {% with messages = get_flashed_messages(with_categories=True) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} w-50 m-auto">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            {% block content %}
+            <h1>Vítejte v pojišťovací aplikaci</h1>
+            <p class="lead">Pro vytvoření pojištění se přihlašte <a href="{{ url_for('users.login') }}">zde!</a></p>
+            {% endblock %}
+        </main>
+
+    <script src="{{ url_for('static', filename='bootstrap-5.0.2-dist/js/bootstrap.bundle.min.js')}}"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    </body>
+</html>

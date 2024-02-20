@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block content %}
+    <section class="content-section">
+        <div class="media d-flex p-5 align-items-center">
+            <div class="media-body">
+                <img class="img-thumbnail" src="{{ url_for('static', filename='pictures/user.png') }}">
+            </div>
+            <div class="media-body p-3">
+                <h2>{{ user.first_name }} {{ user.last_name }}</h2>
+                <p>{{ user.email }}</p>
+                <p>{{ user.city }}</p>
+                <p>{{ user.address }}</p>
+                <p>{{ user.zip }}</p>
+            </div>
+        </div>
+        <div class="media-body text-center py-3 border-top">
+            <a class="btn btn-primary" href="{{ url_for('insurances.add_insurance', user_id=user.id) }}" role="button">Přidat pojištění</a>
+            <a class="btn btn-warning" href="{{ url_for('users.edit_insured_person', user_id=user.id) }}" role="button">Upravit pojištěnce</a>
+            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal-{{ user.id }}">Odstranit pojištěnce</button>
+        </div>
+
+        <div class="modal fade" id="deleteModal-{{ user.id }}" tabindex="-1" aria-labelledby="deleteModalLabel1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteModalLabel1">Odstranění pojištěnce</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Opravdu si přejete odstranit tohoto pojištěnce?<br>
+                        <h4 class="pt-2">{{ user.first_name }} {{ user.last_name }}</h4>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Ne</button>
+                        <form action="{{ url_for('users.delete_insured_person') }}" method="POST">
+                            <input type="hidden" name="user_id" value="{{ user.id }}">
+                            <input type="submit" class="btn btn-success" value="Ano">
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="media-body pt-3">
+            <table class="table w-75 m-auto">
+                <thead>
+                    <tr>
+                        <th scope="col">Pojištění</th>
+                        <th scope="col">Částka</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                    <tbody>
+                    {% for ins in insurances_list.items %}
+                        <tr>
+                            <td><a href="{{ url_for('insurances.edit_insurance', user_id=user.id, ins_id=ins.id) }}">{{ ins.insurance_name }}</a></td>
+                            <td>{{ ins.amount }}</td>
+                            <td class="text-end">
+                                <a class="btn btn-warning mx-2" href="{{ url_for('insurances.edit_insurance', user_id=user.id, ins_id=ins.id) }}" role="button">Upravit</a>
+                                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal-{{ ins.id }}">Odstranit</button>
+                            </td>
+                        </tr>
+                        <div class="modal fade" id="deleteModal-{{ ins.id }}" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                              <div class="modal-dialog">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h5 class="modal-title" id="deleteModalLabel">Odstranění pojištění</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                  </div>
+                                  <div class="modal-body">
+                                    Opravdu si přejete odstranit toto pojištění?<br>
+                                      <h4 class="pt-2">{{ ins.insurance_name }} </h4>
+                                      <p>Předmět pojištění {{ ins.insured_item }}</p>
+                                  </div>
+                                  <div class="modal-footer">
+                                      <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Ne</button>
+                                      <form action="{{ url_for('insurances.delete_insurance', user_id=user.id) }}" method="POST">
+                                          <input type="hidden" name="ins_id" value="{{ ins.id }}">
+                                          <input type="submit" class="btn btn-success" value="Ano">
+                                      </form>
+                                  </div>
+                                </div>
+                              </div>
+                        </div>
+                    {% endfor %}
+                    </tbody>
+            </table>
+            <ul class="pagination pt-4 text-center justify-content-center">
+                {% for page in insurances_list.iter_pages(left_current=2, right_current=2) %}
+                    {% if page %}
+                        {% if page != insurances_list.page %}
+                            <li class="page-item"><a class="page-link" href="{{ url_for('users.user_account', page=page, user_id=user.id) }}">{{ page }}</a></li>
+                        {% else %}
+                            <li class="page-item active"><a class="page-link" href="{{ url_for('users.user_account', page=page, user_id=user.id) }}">{{ page }}</a></li>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+                </ul>
+        </div>
+    </section>
+{% endblock %}

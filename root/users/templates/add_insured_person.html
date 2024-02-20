@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="content-section">
+      <form method="POST" class="w-50 m-auto" action="">
+          {{ form.hidden_tag() }}
+          <fieldset class="form-group row g-3">
+              <legend class="border-bottom mb-4">Nový pojištěnec</legend>
+              <div class="col-md-6">
+                  {{ form.first_name.label(class="form-label") }}
+                  {{ form.first_name(class="form-control") }}
+              </div>
+              <div class="col-md-6">
+                  {{ form.last_name.label(class="form-label") }}
+                  {{ form.last_name(class="form-control") }}
+              </div>
+              <div class="col-md-12">
+                  {{ form.email.label(class="form-label") }}
+                  {{ form.email(class="form-control") }}
+              </div>
+              <div class="col-md-5">
+                  {{ form.city.label(class="form-label") }}
+                  {{ form.city(class="form-control") }}
+              </div>
+              <div class="col-md-5">
+                  {{ form.address.label(class="form-label") }}
+                  {{ form.address(class="form-control") }}
+              </div>
+              <div class="col-md-2">
+                  {{ form.zip.label(class="form-label") }}
+                  {{ form.zip(class="form-control") }}
+              </div>
+          </fieldset>
+          <div class="my-4 d-flex justify-content-between">
+              {{ form.submit(class="btn btn-primary px-5") }}
+              <a class="btn btn-secondary px-5" href="{{ url_for('users.insured_persons') }}" role="button">Zpět</a>
+          </div>
+      </form>
+</div>
+{% endblock %}

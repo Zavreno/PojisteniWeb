@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="content-section">
+      <form method="POST" class="w-50 m-auto" action="">
+          {{ form.hidden_tag() }}
+          <fieldset class="form-group row g-3">
+              <legend class="border-bottom mb-4">Nové pojištění</legend>
+              <div class="col-md-12">
+                  {{ form.insurance_name.label(class="form-label") }}
+                  {{ form.insurance_name(class="form-control") }}
+              </div>
+              <div class="col-md-6">
+                  {{ form.amount.label(class="form-label") }}
+                  {{ form.amount(class="form-control") }}
+              </div>
+              <div class="col-md-6">
+                  {{ form.insured_item.label(class="form-label") }}
+                  {{ form.insured_item(class="form-control") }}
+              </div>
+              <div class="col-md-6">
+                  {{ form.valid_from.label(class="form-label") }}
+                  {{ form.valid_from(class="form-control") }}
+              </div>
+              <div class="col-md-6">
+                  {{ form.valid_till.label(class="form-label") }}
+                  {{ form.valid_till(class="form-control") }}
+              </div>
+          </fieldset>
+          <div class="my-4 d-flex justify-content-between">
+              {{ form.submit(class="btn btn-primary px-5") }}
+              {% if current_user %}
+                <a class="btn btn-secondary px-5" href="{{ url_for('users.my_account') }}" role="button">Zpět</a>
+              {% else %}
+                <a class="btn btn-secondary px-5" href="{{ url_for('users.user_account', user_id=user.id) }}" role="button">Zpět</a>
+              {% endif %}
+          </div>
+      </form>
+</div>
+{% endblock %}
